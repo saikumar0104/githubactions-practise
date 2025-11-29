@@ -1,29 +1,29 @@
-name: Simple Python CI (No requirements.txt)
+name: Simple Python CI
 
-on:
-  push:
-  pull_request:
-  workflow_dispatch:
+on: [push]
 
 jobs:
-  build_test:
+  test_job:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout your code
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Step 2: Setup Python
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      # Step 3: Install pytest directly (NO requirements.txt)
       - name: Install pytest
         run: pip install pytest
 
-      # Step 4: Run tests
-      - name: Run tests
-        run: pytest -q
+      - name: Run tests (show output)
+        run: pytest -v
+
+      - name: Save test output to file
+        run: pytest -v > test-output.txt
+
+      - name: Upload test output
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-output
+          path: test-output.txt
